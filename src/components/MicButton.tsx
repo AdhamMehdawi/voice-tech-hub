@@ -33,8 +33,8 @@ const MicButton: React.FC<MicButtonProps> = ({ onRecordingComplete, isProcessing
       setIsRecording(false);
     };
     
-    recognitionInstance.onerror = (event) => {
-      console.error('Speech recognition error', event.error);
+    recognitionInstance.onerror = (event: Event) => {
+      console.error('Speech recognition error', (event as unknown as { error: string }).error);
       setIsRecording(false);
     };
     
