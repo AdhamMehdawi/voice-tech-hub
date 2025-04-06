@@ -67,6 +67,27 @@
     @apply before:content-[''] before:absolute before:inset-0 before:rounded-full before:animate-pulse-ring before:bg-primary/80;
   }
   
+  /* Circuit animation */
+  .circuit-line {
+    @apply relative overflow-hidden;
+  }
+  
+  .circuit-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.8), transparent);
+    animation: circuit-pulse 3s infinite;
+  }
+  
+  @keyframes circuit-pulse {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
   /* ElevenLabs Widget Customization */
   .elevenlabs-widget-container {
     @apply bg-transparent flex items-center justify-center;
