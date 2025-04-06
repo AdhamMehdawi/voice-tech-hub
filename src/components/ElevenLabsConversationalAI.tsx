@@ -17,6 +17,7 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
   const [error, setError] = useState<string | null>(null);
   const scriptRef = useRef<HTMLScriptElement | null>(null);
   const mountedRef = useRef(true);
+  const widgetElementRef = useRef<HTMLElement | null>(null);
   
   useEffect(() => {
     console.log('ElevenLabs component mounting...');
@@ -34,18 +35,18 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
       try {
         if (!containerRef.current) return;
         
+        // Clear previous content safely using innerHTML
+        containerRef.current.innerHTML = '';
+        
         // Create the widget element
         const widgetElement = document.createElement('elevenlabs-conval');
         widgetElement.setAttribute('agent-id', agentId);
         
-        // Safely clear the container first - check if the container has any children
-        const container = containerRef.current;
-        if (container) {
-          // Instead of using while loop, use innerHTML to clear the container
-          container.innerHTML = '';
-          // Then append the new element
-          container.appendChild(widgetElement);
-        }
+        // Store reference to the widget element for cleanup
+        widgetElementRef.current = widgetElement;
+        
+        // Append to container
+        containerRef.current.appendChild(widgetElement);
         
         console.log('ElevenLabs widget element added to DOM');
       } catch (e) {
@@ -69,6 +70,9 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
         script.async = true;
         script.type = 'text/javascript';
         
+        // Store reference to the script element
+        scriptRef.current = script;
+        
         // Add load event listener
         script.onload = () => {
           console.log('ElevenLabs script loaded successfully');
@@ -88,7 +92,6 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
         };
         
         document.body.appendChild(script);
-        scriptRef.current = script;
       } else {
         // Script already exists
         safeSetState(setLoading, false);
@@ -104,12 +107,13 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
       console.log('ElevenLabs component unmounting...');
       mountedRef.current = false;
       
-      // Safely clear the container using innerHTML instead of removeChild
+      // Safely clear the container
       if (containerRef.current) {
         try {
+          // Use innerHTML as a safer way to clear the container
           containerRef.current.innerHTML = '';
         } catch (e) {
-          console.error('Error cleaning up ElevenLabs widget container:', e);
+          console.error('Error cleaning up container:', e);
         }
       }
       

@@ -12,6 +12,12 @@ const Index = () => {
   // Handler for JarvisInterface activation
   const handleActivate = useCallback(() => {
     console.log('Activating ElevenLabs widget');
+    // Reset widget state when activating
+    setWidgetLoaded(false);
+    setWidgetError(null);
+    // Generate a new key for the widget
+    widgetKey.current = `elevenlabs-widget-${Date.now()}`;
+    // Show widget
     setShowWidget(true);
   }, []);
   
@@ -32,10 +38,11 @@ const Index = () => {
     console.log('Closing ElevenLabs widget');
     setShowWidget(false);
     // Reset widget state when closing
-    setWidgetLoaded(false);
-    setWidgetError(null);
-    // Generate a new key for the next time the widget is shown
-    widgetKey.current = `elevenlabs-widget-${Date.now()}`;
+    setTimeout(() => {
+      // Delay the reset to ensure the component is unmounted first
+      setWidgetLoaded(false);
+      setWidgetError(null);
+    }, 100);
   }, []);
   
   // Log when widget visibility changes
