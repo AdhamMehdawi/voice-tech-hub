@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -93,24 +92,28 @@
     @apply bg-transparent flex items-center justify-center;
     min-height: 500px;
     width: 100%;
+    position: relative;
+    z-index: 50;
   }
   
   /* Target the ElevenLabs widget elements for styling */
   elevenlabs-conval {
-    --el-background-color: transparent;
-    --el-chat-background-color: transparent;
-    --el-primary-color: #3B82F6;
-    --el-text-color: #E2E8F0;
-    --el-input-background-color: rgba(59, 130, 246, 0.1);
-    --el-border-color: rgba(59, 130, 246, 0.2);
+    --el-background-color: transparent !important;
+    --el-chat-background-color: rgba(15, 23, 42, 0.7) !important;
+    --el-primary-color: #3B82F6 !important;
+    --el-text-color: #E2E8F0 !important;
+    --el-input-background-color: rgba(59, 130, 246, 0.1) !important;
+    --el-border-color: rgba(59, 130, 246, 0.2) !important;
     
     @apply h-full w-full max-w-full flex-1;
-    margin: 0 auto;
+    margin: 0 auto !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    position: absolute !important;
-    inset: 0 !important;
+    position: relative !important;
+    inset: auto !important;
+    z-index: 50 !important;
+    overflow: visible !important;
   }
   
   /* Ensure the chat container inside the widget is centered */
@@ -118,5 +121,6 @@
     margin: 0 auto !important;
     max-width: 600px !important;
     height: auto !important;
+    background-color: transparent !important;
   }
 }

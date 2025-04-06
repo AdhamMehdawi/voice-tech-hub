@@ -9,7 +9,9 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Clear the container
+    console.log('ElevenLabs component mounting...');
+    
+    // Clear the container and add the widget
     if (containerRef.current) {
       containerRef.current.innerHTML = '';
       
@@ -17,6 +19,8 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
       const widgetElement = document.createElement('elevenlabs-conval');
       widgetElement.setAttribute('agent-id', agentId);
       containerRef.current.appendChild(widgetElement);
+      
+      console.log('ElevenLabs widget element added to DOM');
     }
     
     // Load the script if it doesn't exist
@@ -27,10 +31,17 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
       script.src = 'https://elevenlabs.io/conval-widget/index.js';
       script.async = true;
       script.type = 'text/javascript';
-      document.body.appendChild(script);
       
-      // For debugging
-      console.log('ElevenLabs script loaded');
+      // Add load event listener for debugging
+      script.onload = () => {
+        console.log('ElevenLabs script loaded successfully');
+      };
+      
+      script.onerror = (e) => {
+        console.error('Error loading ElevenLabs script:', e);
+      };
+      
+      document.body.appendChild(script);
     }
     
     // Cleanup function
@@ -38,15 +49,16 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
       if (containerRef.current) {
         containerRef.current.innerHTML = '';
       }
+      console.log('ElevenLabs component unmounted');
     };
   }, [agentId]);
   
-  // Log when component is mounted
-  console.log('ElevenLabs component mounted with agent ID:', agentId);
-  
   return (
-    <div ref={containerRef} className="elevenlabs-widget-container h-full w-full">
+    <div ref={containerRef} className="elevenlabs-widget-container h-full w-full bg-transparent z-50">
       {/* Widget will be appended here by the useEffect */}
+      <div className="flex items-center justify-center h-full w-full">
+        <p className="text-jarvis-blue animate-pulse">Initializing Jarvis voice interface...</p>
+      </div>
     </div>
   );
 };
