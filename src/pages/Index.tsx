@@ -15,7 +15,7 @@ const Index = () => {
       <div className="relative w-full max-w-4xl h-full flex items-center justify-center">
         <JarvisInterface onActivate={handleActivate} />
         {showWidget && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-auto z-10">
             <ElevenLabsConversationalAI agentId="xyWFCQVZhNLeTZItTuLa" />
           </div>
         )}
