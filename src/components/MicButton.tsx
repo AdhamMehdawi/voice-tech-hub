@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Mic, MicOff, Loader2 } from 'lucide-react';
+import '../types/speech-recognition.d.ts'; // Import type definitions
 
 interface MicButtonProps {
   onRecordingComplete: (transcript: string) => void;
@@ -14,14 +15,14 @@ const MicButton: React.FC<MicButtonProps> = ({ onRecordingComplete, isProcessing
   const startRecording = () => {
     if (isProcessing) return;
     
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
     
-    if (!SpeechRecognition) {
+    if (!SpeechRecognitionAPI) {
       console.error("Speech recognition not supported in this browser");
       return;
     }
     
-    const recognitionInstance = new SpeechRecognition();
+    const recognitionInstance = new SpeechRecognitionAPI();
     recognitionInstance.continuous = false;
     recognitionInstance.lang = 'en-US';
     recognitionInstance.interimResults = false;
@@ -33,8 +34,8 @@ const MicButton: React.FC<MicButtonProps> = ({ onRecordingComplete, isProcessing
       setIsRecording(false);
     };
     
-    recognitionInstance.onerror = (event: Event) => {
-      console.error('Speech recognition error', (event as unknown as { error: string }).error);
+    recognitionInstance.onerror = (event) => {
+      console.error('Speech recognition error', event.error);
       setIsRecording(false);
     };
     
