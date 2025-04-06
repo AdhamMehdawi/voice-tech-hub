@@ -9,13 +9,13 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Create the widget element
-    const widgetElement = document.createElement('elevenlabs-conval');
-    widgetElement.setAttribute('agent-id', agentId);
-    
-    // Add the widget to the container
+    // Clear the container
     if (containerRef.current) {
       containerRef.current.innerHTML = '';
+      
+      // Create the widget element with the exact structure from the embed code
+      const widgetElement = document.createElement('elevenlabs-conval');
+      widgetElement.setAttribute('agent-id', agentId);
       containerRef.current.appendChild(widgetElement);
     }
     
