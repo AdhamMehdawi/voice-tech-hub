@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import ElevenLabsConversationalAI from '@/components/ElevenLabsConversationalAI';
 import JarvisInterface from '@/components/JarvisInterface';
@@ -23,13 +24,15 @@ const Index = () => {
   const handleWidgetError = useCallback((error: Error) => {
     console.error('ElevenLabs widget error:', error);
     setWidgetError(error.message);
-    // Optional: implement fallback functionality here
   }, []);
   
   // Close widget handler
   const handleCloseWidget = useCallback(() => {
     console.log('Closing ElevenLabs widget');
     setShowWidget(false);
+    // Reset widget state when closing
+    setWidgetLoaded(false);
+    setWidgetError(null);
   }, []);
   
   // Log when widget visibility changes
@@ -59,12 +62,15 @@ const Index = () => {
               </svg>
             </button>
             
-            {/* ElevenLabs widget */}
-            <ElevenLabsConversationalAI 
-              agentId="xyWFCQVZhNLeTZItTuLa" 
-              onLoad={handleWidgetLoad}
-              onError={handleWidgetError}
-            />
+            {/* Key is added to force re-mount when showing again */}
+            {showWidget && (
+              <ElevenLabsConversationalAI 
+                key={`elevenlabs-widget-${Date.now()}`}
+                agentId="xyWFCQVZhNLeTZItTuLa" 
+                onLoad={handleWidgetLoad}
+                onError={handleWidgetError}
+              />
+            )}
             
             {/* Status indicator */}
             {!widgetLoaded && !widgetError && (

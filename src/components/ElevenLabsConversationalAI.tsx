@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 
 interface ElevenLabsConversationalAIProps {
@@ -14,25 +15,32 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const scriptRef = useRef<HTMLScriptElement | null>(null);
   
   useEffect(() => {
     console.log('ElevenLabs component mounting...');
+    let isMounted = true;
     
     // Clear the container and add the widget
     if (containerRef.current) {
-      containerRef.current.innerHTML = '';
-      
       try {
         // Create the widget element with the exact structure from the embed code
         const widgetElement = document.createElement('elevenlabs-conval');
         widgetElement.setAttribute('agent-id', agentId);
-        containerRef.current.appendChild(widgetElement);
         
+        // Clear container safely before appending
+        while (containerRef.current.firstChild) {
+          containerRef.current.removeChild(containerRef.current.firstChild);
+        }
+        
+        containerRef.current.appendChild(widgetElement);
         console.log('ElevenLabs widget element added to DOM');
       } catch (e) {
         console.error('Error creating ElevenLabs widget:', e);
-        setError('Failed to create widget element');
-        onError?.(e instanceof Error ? e : new Error('Unknown error'));
+        if (isMounted) {
+          setError('Failed to create widget element');
+          onError?.(e instanceof Error ? e : new Error('Unknown error'));
+        }
       }
     }
     
@@ -48,18 +56,23 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
       // Add load event listener
       script.onload = () => {
         console.log('ElevenLabs script loaded successfully');
-        setLoading(false);
-        onLoad?.();
+        if (isMounted) {
+          setLoading(false);
+          onLoad?.();
+        }
       };
       
       script.onerror = (e) => {
         console.error('Error loading ElevenLabs script:', e);
-        setError('Failed to load ElevenLabs script');
-        setLoading(false);
-        onError?.(new Error('Failed to load ElevenLabs script'));
+        if (isMounted) {
+          setError('Failed to load ElevenLabs script');
+          setLoading(false);
+          onError?.(new Error('Failed to load ElevenLabs script'));
+        }
       };
       
       document.body.appendChild(script);
+      scriptRef.current = script;
     } else {
       // Script already exists
       setLoading(false);
@@ -67,9 +80,22 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
     
     // Cleanup function
     return () => {
+      isMounted = false;
+      console.log('ElevenLabs component unmounting...');
+      
       if (containerRef.current) {
-        containerRef.current.innerHTML = '';
+        // Safely clear the container
+        try {
+          const container = containerRef.current;
+          while (container.firstChild) {
+            container.removeChild(container.firstChild);
+          }
+        } catch (e) {
+          console.error('Error cleaning up ElevenLabs widget container:', e);
+        }
       }
+      
+      // Don't remove the script on unmount as it might be used by other instances
       console.log('ElevenLabs component unmounted');
     };
   }, [agentId, onLoad, onError]);
