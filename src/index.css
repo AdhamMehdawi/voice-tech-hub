@@ -41,8 +41,8 @@
   }
 
   body {
-    @apply bg-jarvis-dark text-foreground;
-    background-image: radial-gradient(circle at 50% 10%, rgba(59, 130, 246, 0.1), transparent 50%);
+    @apply bg-black text-foreground;
+    background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05), transparent 60%);
   }
 }
 
@@ -77,14 +77,14 @@
   /* Target the ElevenLabs widget elements for styling */
   elevenlabs-conval {
     --el-background-color: transparent;
-    --el-chat-background-color: rgba(0, 0, 0, 0.3);
-    --el-primary-color: hsl(var(--primary));
-    --el-text-color: hsl(var(--foreground));
-    --el-input-background-color: rgba(255, 255, 255, 0.1);
-    --el-border-color: rgba(255, 255, 255, 0.1);
+    --el-chat-background-color: transparent;
+    --el-primary-color: #3B82F6;
+    --el-text-color: #E2E8F0;
+    --el-input-background-color: rgba(59, 130, 246, 0.1);
+    --el-border-color: rgba(59, 130, 246, 0.2);
     
     @apply h-full w-full flex-1;
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
   }
 }
