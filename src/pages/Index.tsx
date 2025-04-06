@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import ChatInterface from '@/components/ChatInterface';
 import Header from '@/components/Header';
 import Settings from '@/components/Settings';
+import ElevenLabsConversationalAI from '@/components/ElevenLabsConversationalAI';
 
 const Index = () => {
   const [webhookUrl, setWebhookUrl] = useState('https://your-webhook-endpoint.com');
+  const [showOriginalInterface, setShowOriginalInterface] = useState(false);
   
   // Load webhook URL from localStorage on mount
   useEffect(() => {
@@ -21,13 +22,45 @@ const Index = () => {
     localStorage.setItem('jarvisWebhookUrl', url);
   };
   
+  const toggleInterface = () => {
+    setShowOriginalInterface(!showOriginalInterface);
+  };
+  
   return (
     <div className="flex flex-col h-screen bg-jarvis-gradient text-foreground">
       <div className="relative flex flex-col max-w-lg mx-auto w-full h-full border-x border-border/30 glass-panel">
         <Header />
-        <Settings webhookUrl={webhookUrl} onWebhookChange={handleWebhookChange} />
+        <Settings 
+          webhookUrl={webhookUrl} 
+          onWebhookChange={handleWebhookChange} 
+        />
+        
         <div className="flex-1 overflow-hidden">
-          <ChatInterface webhookUrl={webhookUrl} />
+          {showOriginalInterface ? (
+            <div className="p-4 text-center">
+              <button 
+                onClick={toggleInterface}
+                className="bg-primary hover:bg-primary/80 text-primary-foreground px-4 py-2 rounded-md mb-4"
+              >
+                Switch to ElevenLabs Interface
+              </button>
+              {/* Original Chat Interface would go here */}
+            </div>
+          ) : (
+            <div className="h-full flex flex-col">
+              <div className="p-4 text-center">
+                <button 
+                  onClick={toggleInterface}
+                  className="bg-primary hover:bg-primary/80 text-primary-foreground px-4 py-2 rounded-md mb-4"
+                >
+                  Switch to Original Interface
+                </button>
+              </div>
+              <div className="flex-1">
+                <ElevenLabsConversationalAI agentId="xyWFCQVZhNLeTZItTuLa" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

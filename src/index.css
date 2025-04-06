@@ -66,4 +66,22 @@
   .pulse-effect {
     @apply before:content-[''] before:absolute before:inset-0 before:rounded-full before:animate-pulse-ring before:bg-primary/80;
   }
+  
+  /* ElevenLabs Widget Customization */
+  .elevenlabs-widget-container {
+    @apply bg-transparent;
+  }
+  
+  /* Target the ElevenLabs widget elements for styling */
+  elevenlabs-conval {
+    --el-background-color: transparent;
+    --el-chat-background-color: rgba(0, 0, 0, 0.3);
+    --el-primary-color: hsl(var(--primary));
+    --el-text-color: hsl(var(--foreground));
+    --el-input-background-color: rgba(255, 255, 255, 0.1);
+    --el-border-color: rgba(255, 255, 255, 0.1);
+    
+    @apply h-full;
+  }
 }
+
