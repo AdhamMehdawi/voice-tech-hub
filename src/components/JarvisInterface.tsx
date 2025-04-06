@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 
 interface JarvisInterfaceProps {
   onActivate?: () => void;
+  widgetActive?: boolean;
 }
 
-const JarvisInterface = ({ onActivate }: JarvisInterfaceProps) => {
+const JarvisInterface = ({ onActivate, widgetActive = false }: JarvisInterfaceProps) => {
   const [rotationDegree, setRotationDegree] = useState(0);
   
   // Create a rotation effect for outer circuit elements
@@ -52,14 +53,14 @@ const JarvisInterface = ({ onActivate }: JarvisInterfaceProps) => {
             <div className="absolute w-48 h-48 rounded-full border border-jarvis-blue/30 animate-pulse-slow"></div>
             <div className="absolute w-36 h-36 rounded-full border border-jarvis-blue/50 animate-[pulse_3s_ease-in-out_infinite]"></div>
             
-            {/* Center core with pulsing effect - removed button styling */}
+            {/* Center core with pulsing effect - clickable div instead of button */}
             <div 
               onClick={onActivate}
-              className="w-24 h-24 rounded-full bg-gradient-radial from-jarvis-blue to-jarvis-blue/5 shadow-[0_0_40px_rgba(59,130,246,0.5)] flex items-center justify-center relative pointer-events-auto cursor-pointer"
+              className={`w-24 h-24 rounded-full ${widgetActive ? 'bg-gradient-radial from-green-500 to-green-500/5' : 'bg-gradient-radial from-jarvis-blue to-jarvis-blue/5'} shadow-[0_0_40px_rgba(59,130,246,0.5)] flex items-center justify-center relative pointer-events-auto cursor-pointer transition-colors duration-300`}
             >
-              <div className="w-16 h-16 rounded-full bg-jarvis-blue/50 backdrop-blur-md flex items-center justify-center">
-                <div className="w-12 h-12 rounded-full bg-jarvis-blue flex items-center justify-center pulse-effect">
-                  <span className="text-white text-xs font-semibold">START</span>
+              <div className={`w-16 h-16 rounded-full ${widgetActive ? 'bg-green-500/50' : 'bg-jarvis-blue/50'} backdrop-blur-md flex items-center justify-center transition-colors duration-300`}>
+                <div className={`w-12 h-12 rounded-full ${widgetActive ? 'bg-green-500' : 'bg-jarvis-blue'} flex items-center justify-center pulse-effect transition-colors duration-300`}>
+                  <span className="text-white text-xs font-semibold">{widgetActive ? 'ACTIVE' : 'START'}</span>
                 </div>
               </div>
             </div>
