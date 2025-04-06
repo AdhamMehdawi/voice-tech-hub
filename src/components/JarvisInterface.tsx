@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { Button } from './ui/button';
 
 interface JarvisInterfaceProps {
   onActivate?: () => void;
@@ -19,7 +18,7 @@ const JarvisInterface = ({ onActivate }: JarvisInterfaceProps) => {
   }, []);
   
   return (
-    <div className="absolute inset-0 pointer-events-none flex flex-col">
+    <div className="fixed inset-0 pointer-events-none flex flex-col">
       {/* Header with JARVIS logo */}
       <div className="flex justify-between items-center p-6">
         <div className="flex items-center">
@@ -53,16 +52,16 @@ const JarvisInterface = ({ onActivate }: JarvisInterfaceProps) => {
             <div className="absolute w-48 h-48 rounded-full border border-jarvis-blue/30 animate-pulse-slow"></div>
             <div className="absolute w-36 h-36 rounded-full border border-jarvis-blue/50 animate-[pulse_3s_ease-in-out_infinite]"></div>
             
-            {/* Center core with pulsing effect */}
-            <div className="w-24 h-24 rounded-full bg-gradient-radial from-jarvis-blue to-jarvis-blue/5 shadow-[0_0_40px_rgba(59,130,246,0.5)] flex items-center justify-center relative">
-              <Button 
-                onClick={onActivate}
-                className="w-16 h-16 rounded-full bg-jarvis-blue/30 backdrop-blur-md border border-jarvis-blue/50 hover:bg-jarvis-blue/50 transition-all pointer-events-auto flex items-center justify-center shadow-lg"
-              >
+            {/* Center core with pulsing effect - removed button styling */}
+            <div 
+              onClick={onActivate}
+              className="w-24 h-24 rounded-full bg-gradient-radial from-jarvis-blue to-jarvis-blue/5 shadow-[0_0_40px_rgba(59,130,246,0.5)] flex items-center justify-center relative pointer-events-auto cursor-pointer"
+            >
+              <div className="w-16 h-16 rounded-full bg-jarvis-blue/50 backdrop-blur-md flex items-center justify-center">
                 <div className="w-12 h-12 rounded-full bg-jarvis-blue flex items-center justify-center pulse-effect">
                   <span className="text-white text-xs font-semibold">START</span>
                 </div>
-              </Button>
+              </div>
             </div>
           </div>
           
