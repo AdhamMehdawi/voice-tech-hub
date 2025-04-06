@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Mic, MicOff, Loader2 } from 'lucide-react';
-import '../types/speech-recognition.d.ts'; // Import type definitions
+// Type definitions are referenced in the speech-recognition.d.ts file
 
 interface MicButtonProps {
   onRecordingComplete: (transcript: string) => void;
@@ -15,7 +15,9 @@ const MicButton: React.FC<MicButtonProps> = ({ onRecordingComplete, isProcessing
   const startRecording = () => {
     if (isProcessing) return;
     
-    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    // Use type assertion to tell TypeScript these properties exist
+    const SpeechRecognitionAPI = (window as any).SpeechRecognition || 
+                                 (window as any).webkitSpeechRecognition;
     
     if (!SpeechRecognitionAPI) {
       console.error("Speech recognition not supported in this browser");
