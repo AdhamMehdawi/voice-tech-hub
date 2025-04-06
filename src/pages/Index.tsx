@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ElevenLabsConversationalAI from '@/components/ElevenLabsConversationalAI';
 import JarvisInterface from '@/components/JarvisInterface';
 
@@ -7,8 +7,14 @@ const Index = () => {
   const [showWidget, setShowWidget] = useState(false);
   
   const handleActivate = () => {
+    console.log('Activating ElevenLabs widget');
     setShowWidget(true);
   };
+  
+  // Log when widget visibility changes
+  useEffect(() => {
+    console.log('Widget visibility:', showWidget ? 'visible' : 'hidden');
+  }, [showWidget]);
   
   return (
     <div className="flex items-center justify-center h-screen bg-black">

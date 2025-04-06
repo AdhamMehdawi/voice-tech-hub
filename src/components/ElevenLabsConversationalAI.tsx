@@ -20,12 +20,17 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
     }
     
     // Load the script if it doesn't exist
-    if (!document.querySelector('script[src="https://elevenlabs.io/conval-widget/index.js"]')) {
+    const scriptId = 'elevenlabs-conval-script';
+    if (!document.getElementById(scriptId)) {
       const script = document.createElement('script');
+      script.id = scriptId;
       script.src = 'https://elevenlabs.io/conval-widget/index.js';
       script.async = true;
       script.type = 'text/javascript';
       document.body.appendChild(script);
+      
+      // For debugging
+      console.log('ElevenLabs script loaded');
     }
     
     // Cleanup function
@@ -36,8 +41,13 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
     };
   }, [agentId]);
   
+  // Log when component is mounted
+  console.log('ElevenLabs component mounted with agent ID:', agentId);
+  
   return (
-    <div ref={containerRef} className="elevenlabs-widget-container h-full w-full"></div>
+    <div ref={containerRef} className="elevenlabs-widget-container h-full w-full">
+      {/* Widget will be appended here by the useEffect */}
+    </div>
   );
 };
 
