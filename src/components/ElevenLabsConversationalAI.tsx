@@ -16,86 +16,103 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const scriptRef = useRef<HTMLScriptElement | null>(null);
+  const mountedRef = useRef(true);
   
   useEffect(() => {
     console.log('ElevenLabs component mounting...');
-    let isMounted = true;
+    mountedRef.current = true;
     
-    // Clear the container and add the widget
-    if (containerRef.current) {
+    // Function to safely set state only if component is still mounted
+    const safeSetState = (stateSetter: Function, value: any) => {
+      if (mountedRef.current) {
+        stateSetter(value);
+      }
+    };
+    
+    // Create the widget element with the exact structure from the embed code
+    const setupWidget = () => {
       try {
-        // Create the widget element with the exact structure from the embed code
+        if (!containerRef.current) return;
+        
+        // Create the widget element
         const widgetElement = document.createElement('elevenlabs-conval');
         widgetElement.setAttribute('agent-id', agentId);
         
-        // Clear container safely before appending
-        while (containerRef.current.firstChild) {
-          containerRef.current.removeChild(containerRef.current.firstChild);
+        // Safely clear the container first - check if the container has any children
+        const container = containerRef.current;
+        if (container) {
+          // Instead of using while loop, use innerHTML to clear the container
+          container.innerHTML = '';
+          // Then append the new element
+          container.appendChild(widgetElement);
         }
         
-        containerRef.current.appendChild(widgetElement);
         console.log('ElevenLabs widget element added to DOM');
       } catch (e) {
         console.error('Error creating ElevenLabs widget:', e);
-        if (isMounted) {
-          setError('Failed to create widget element');
-          onError?.(e instanceof Error ? e : new Error('Unknown error'));
+        if (mountedRef.current) {
+          safeSetState(setError, 'Failed to create widget element');
+          if (onError) onError(e instanceof Error ? e : new Error('Unknown error'));
         }
       }
-    }
+    };
     
     // Load the script if it doesn't exist
-    const scriptId = 'elevenlabs-conval-script';
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = 'https://elevenlabs.io/conval-widget/index.js';
-      script.async = true;
-      script.type = 'text/javascript';
+    const loadScript = () => {
+      const scriptId = 'elevenlabs-conval-script';
+      let script = document.getElementById(scriptId) as HTMLScriptElement | null;
       
-      // Add load event listener
-      script.onload = () => {
-        console.log('ElevenLabs script loaded successfully');
-        if (isMounted) {
-          setLoading(false);
-          onLoad?.();
-        }
-      };
-      
-      script.onerror = (e) => {
-        console.error('Error loading ElevenLabs script:', e);
-        if (isMounted) {
-          setError('Failed to load ElevenLabs script');
-          setLoading(false);
-          onError?.(new Error('Failed to load ElevenLabs script'));
-        }
-      };
-      
-      document.body.appendChild(script);
-      scriptRef.current = script;
-    } else {
-      // Script already exists
-      setLoading(false);
-    }
+      if (!script) {
+        script = document.createElement('script');
+        script.id = scriptId;
+        script.src = 'https://elevenlabs.io/conval-widget/index.js';
+        script.async = true;
+        script.type = 'text/javascript';
+        
+        // Add load event listener
+        script.onload = () => {
+          console.log('ElevenLabs script loaded successfully');
+          if (mountedRef.current) {
+            safeSetState(setLoading, false);
+            if (onLoad) onLoad();
+          }
+        };
+        
+        script.onerror = (e) => {
+          console.error('Error loading ElevenLabs script:', e);
+          if (mountedRef.current) {
+            safeSetState(setError, 'Failed to load ElevenLabs script');
+            safeSetState(setLoading, false);
+            if (onError) onError(new Error('Failed to load ElevenLabs script'));
+          }
+        };
+        
+        document.body.appendChild(script);
+        scriptRef.current = script;
+      } else {
+        // Script already exists
+        safeSetState(setLoading, false);
+      }
+    };
+    
+    // Setup widget and load script
+    setupWidget();
+    loadScript();
     
     // Cleanup function
     return () => {
-      isMounted = false;
       console.log('ElevenLabs component unmounting...');
+      mountedRef.current = false;
       
+      // Safely clear the container using innerHTML instead of removeChild
       if (containerRef.current) {
-        // Safely clear the container
         try {
-          const container = containerRef.current;
-          while (container.firstChild) {
-            container.removeChild(container.firstChild);
-          }
+          containerRef.current.innerHTML = '';
         } catch (e) {
           console.error('Error cleaning up ElevenLabs widget container:', e);
         }
       }
       
-      // Don't remove the script on unmount as it might be used by other instances
       console.log('ElevenLabs component unmounted');
     };
   }, [agentId, onLoad, onError]);

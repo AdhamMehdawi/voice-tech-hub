@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ElevenLabsConversationalAI from '@/components/ElevenLabsConversationalAI';
 import JarvisInterface from '@/components/JarvisInterface';
 
@@ -7,6 +7,7 @@ const Index = () => {
   const [showWidget, setShowWidget] = useState(false);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
   const [widgetError, setWidgetError] = useState<string | null>(null);
+  const widgetKey = useRef(`elevenlabs-widget-${Date.now()}`);
   
   // Handler for JarvisInterface activation
   const handleActivate = useCallback(() => {
@@ -33,6 +34,8 @@ const Index = () => {
     // Reset widget state when closing
     setWidgetLoaded(false);
     setWidgetError(null);
+    // Generate a new key for the next time the widget is shown
+    widgetKey.current = `elevenlabs-widget-${Date.now()}`;
   }, []);
   
   // Log when widget visibility changes
@@ -62,15 +65,13 @@ const Index = () => {
               </svg>
             </button>
             
-            {/* Key is added to force re-mount when showing again */}
-            {showWidget && (
-              <ElevenLabsConversationalAI 
-                key={`elevenlabs-widget-${Date.now()}`}
-                agentId="xyWFCQVZhNLeTZItTuLa" 
-                onLoad={handleWidgetLoad}
-                onError={handleWidgetError}
-              />
-            )}
+            {/* Use the key to force re-mount whenever the widget is shown again */}
+            <ElevenLabsConversationalAI 
+              key={widgetKey.current}
+              agentId="xyWFCQVZhNLeTZItTuLa" 
+              onLoad={handleWidgetLoad}
+              onError={handleWidgetError}
+            />
             
             {/* Status indicator */}
             {!widgetLoaded && !widgetError && (
