@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -86,6 +85,33 @@ export default {
 					'0%': { opacity: '0.3' },
 					'50%': { opacity: '0.5' },
 					'100%': { opacity: '0.3' }
+				},
+				'pulse-slower': {
+					'0%': { opacity: '0.2' },
+					'50%': { opacity: '0.4' },
+					'100%': { opacity: '0.2' }
+				},
+				'float': {
+					'0%': { transform: 'translateY(0) translateX(0)' },
+					'25%': { transform: 'translateY(-10px) translateX(5px)' },
+					'50%': { transform: 'translateY(0) translateX(10px)' },
+					'75%': { transform: 'translateY(10px) translateX(5px)' },
+					'100%': { transform: 'translateY(0) translateX(0)' }
+				},
+				'blink': {
+					'0%': { opacity: '0.3' },
+					'50%': { opacity: '0.7' },
+					'100%': { opacity: '0.3' }
+				},
+				'blink-slow': {
+					'0%': { opacity: '0.2' },
+					'50%': { opacity: '0.5' },
+					'100%': { opacity: '0.2' }
+				},
+				'loading-bar': {
+					'0%': { width: '0%' },
+					'50%': { width: '70%' },
+					'100%': { width: '100%' }
 				}
 			},
 			animation: {
@@ -93,11 +119,20 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'pulse-ring': 'pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite',
 				'fade-in': 'fade-in 0.3s ease-out',
-				'pulse-slow': 'pulse-slow 3s ease-in-out infinite'
+				'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
+				'pulse-slower': 'pulse-slower 5s ease-in-out infinite',
+				'float': 'float 20s ease-in-out infinite',
+				'blink': 'blink 2s ease-in-out infinite',
+				'blink-slow': 'blink-slow 3.5s ease-in-out infinite',
+				'loading-bar': 'loading-bar 2s ease-in-out infinite'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-				'jarvis-gradient': 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)'
+				'jarvis-gradient': 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+				'grid': 'linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)'
+			},
+			backgroundSize: {
+				'grid': '30px 30px'
 			}
 		}
 	},

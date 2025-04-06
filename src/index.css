@@ -48,6 +48,27 @@
 @layer components {
   .glass-panel {
     @apply bg-black/20 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Add glass panel effect with shine */
+  .glass-panel::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.03) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    animation: glass-shine 10s ease-in-out infinite;
+    pointer-events: none;
   }
   
   .message {
@@ -80,6 +101,61 @@
     width: 100%;
     background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.8), transparent);
     animation: circuit-pulse 3s infinite;
+  }
+  
+  /* Dynamic data grid - tech-looking background */
+  .tech-grid {
+    background-size: 30px 30px;
+    background-image: 
+      linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px), 
+      linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    position: relative;
+  }
+
+  .tech-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 70%);
+    pointer-events: none;
+  }
+  
+  /* Shimmering effect for borders */
+  .shimmer-border {
+    position: relative;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    overflow: hidden;
+  }
+  
+  .shimmer-border::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(59, 130, 246, 0.5),
+      transparent
+    );
+    animation: shimmer 4s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+  
+  @keyframes glass-shine {
+    0% { transform: rotate(30deg) translateY(0); opacity: 0; }
+    30% { opacity: 0.3; }
+    70% { opacity: 0; }
+    100% { transform: rotate(30deg) translateY(0); opacity: 0; }
   }
   
   @keyframes circuit-pulse {
@@ -123,4 +199,602 @@
     height: auto !important;
     background-color: transparent !important;
   }
+}
+
+/* Add these styles for the ElevenLabs conversational widget */
+
+/* Style for the widget to center it on screen */
+elevenlabs-convai {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  margin: 0 auto !important;
+  z-index: 50 !important;
+  --el-background-color: transparent !important;
+  --el-chat-background-color: rgba(15, 23, 42, 0.7) !important;
+  --el-primary-color: #3B82F6 !important;
+  --el-text-color: #E2E8F0 !important;
+  --el-input-background-color: rgba(59, 130, 246, 0.1) !important;
+  --el-border-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Center the chat container */
+elevenlabs-convai::part(container) {
+  margin: 0 auto !important;
+  max-width: 85% !important;
+  height: auto !important;
+}
+
+/* Make sure chat is properly centered */
+elevenlabs-convai::part(widget) {
+  position: static !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+  max-width: 800px !important;
+}
+
+/* Additional styles for any dialogs */
+elevenlabs-convai div[role="dialog"] {
+  position: relative !important;
+  margin: 0 auto !important;
+  max-width: 100% !important;
+}
+
+/* Fix for any floating action buttons */
+elevenlabs-convai::part(fab) {
+  position: absolute !important;
+  bottom: 20px !important;
+  right: 20px !important;
+}
+
+/* Ensure the widget is visible and properly placed */
+.elevenlabs-widget-container {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  position: relative;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Data panels with tech look */
+.data-panel {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 4px;
+  padding: 8px;
+  font-family: monospace;
+  font-size: 12px;
+  color: #3B82F6;
+  position: relative;
+  overflow: hidden;
+}
+
+.data-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #3B82F6, transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Animated console text effect */
+.console-text {
+  font-family: monospace;
+  overflow: hidden;
+  border-right: 2px solid rgba(59, 130, 246, 0.75);
+  white-space: nowrap;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: rgba(59, 130, 246, 0.75) }
+}
+
+/* Jarvis custom interface styling */
+.custom-jarvis-interface {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+}
+
+.jarvis-orb {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin-bottom: 140px;
+}
+
+.jarvis-inner-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #29b6f6 0%, #0288d1 100%);
+  box-shadow: 0 0 40px rgba(41, 182, 246, 0.8);
+  z-index: 3;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.jarvis-middle-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid rgba(41, 182, 246, 0.3);
+  z-index: 2;
+  animation: rotate-slow 15s linear infinite;
+}
+
+.jarvis-outer-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 1px solid rgba(41, 182, 246, 0.2);
+  z-index: 1;
+  animation: rotate-slow 25s linear infinite reverse;
+}
+
+/* Add a scanning line effect */
+.jarvis-scan-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(41, 182, 246, 0.5), transparent);
+  animation: scan-up-down 3s ease-in-out infinite;
+  z-index: 4;
+}
+
+/* Add tick marks around the outer circle */
+.jarvis-outer-circle::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 10px;
+  background-color: rgba(41, 182, 246, 0.5);
+}
+
+.jarvis-outer-circle::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 10px;
+  background-color: rgba(41, 182, 246, 0.5);
+}
+
+/* Animation for the scanning effect */
+@keyframes scan-up-down {
+  0% { top: 0; opacity: 0; }
+  25% { opacity: 1; }
+  50% { top: 100%; opacity: 1; }
+  75% { opacity: 0; }
+  100% { top: 0; opacity: 0; }
+}
+
+/* Animation for the slow rotation */
+@keyframes rotate-slow {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Animation for the pulsing glow */
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 30px rgba(41, 182, 246, 0.6); }
+  50% { box-shadow: 0 0 50px rgba(41, 182, 246, 0.8); }
+  100% { box-shadow: 0 0 30px rgba(41, 182, 246, 0.6); }
+}
+
+/* Add horizontal scanning lines that move across the orb */
+.jarvis-status-line {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #29b6f6, transparent);
+  z-index: 0;
+  overflow: hidden;
+}
+
+.jarvis-status-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(41, 182, 246, 0.8), transparent);
+  animation: line-scan 3s linear infinite;
+}
+
+.line-right {
+  top: 50%;
+  right: -280px;
+  width: 300px;
+}
+
+.line-left {
+  top: 50%;
+  left: -280px;
+  width: 300px;
+}
+
+/* Animation for the line scanning effect */
+@keyframes line-scan {
+  0% { left: -50%; }
+  100% { left: 200%; }
+}
+
+.jarvis-status-text {
+  position: absolute;
+  top: 40%;
+  right: -280px;
+  font-family: monospace;
+  font-size: 12px;
+  color: #29b6f6;
+}
+
+.jarvis-talk-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  padding: 10px 25px 10px 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.jarvis-talk-button:hover {
+  background-color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.jarvis-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+  background-color: #242424;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jarvis-avatar-inner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #29b6f6, #0288d1);
+}
+
+.jarvis-talk-text {
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.hidden-until-active {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.5s ease;
+}
+
+.hidden-until-active:not(.hidden) {
+  opacity: 1;
+  height: auto;
+  overflow: visible;
+}
+
+/* Add these style definitions to the Jarvis custom interface section */
+
+.jarvis-tick {
+  position: absolute;
+  width: 8px;
+  height: 2px;
+  background-color: rgba(41, 182, 246, 0.6);
+}
+
+.top-tick {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.right-tick {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.bottom-tick {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.left-tick {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.jarvis-horizontal-line {
+  position: absolute;
+  width: 500px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(41, 182, 246, 0.3), transparent);
+}
+
+.top-line {
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bottom-line {
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.jarvis-corner-accent {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: rgba(41, 182, 246, 0.5);
+  border-style: solid;
+  border-width: 0;
+}
+
+.top-left {
+  top: 20px;
+  left: 20px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-top-left-radius: 4px;
+}
+
+.top-right {
+  top: 20px;
+  right: 20px;
+  border-top-width: 2px;
+  border-right-width: 2px;
+  border-top-right-radius: 4px;
+}
+
+.bottom-left {
+  bottom: 20px;
+  left: 20px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-bottom-left-radius: 4px;
+}
+
+.bottom-right {
+  bottom: 20px;
+  right: 20px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  border-bottom-right-radius: 4px;
+}
+
+.jarvis-subsystem-status {
+  position: absolute;
+  font-family: monospace;
+  font-size: 10px;
+  color: rgba(41, 182, 246, 0.8);
+}
+
+.right-status {
+  right: -200px;
+  top: 30%;
+}
+
+/* Make the button look more like the image */
+.jarvis-talk-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  padding: 8px 25px 8px 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(41, 182, 246, 0.2);
+}
+
+.jarvis-talk-button:hover {
+  background-color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(41, 182, 246, 0.4);
+}
+
+.jarvis-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add finger cursor effect to the button */
+.jarvis-talk-button::after {
+  content: '';
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: yellow;
+  opacity: 0.8;
+}
+
+/* Additional styles for when the widget is active */
+.widget-active .hidden-until-active {
+  opacity: 1;
+  height: auto;
+  overflow: visible;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 100% !important;
+  max-width: 800px !important;
+  max-height: 80vh !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5) !important;
+  z-index: 9999 !important;
+}
+
+/* Modal backdrop effect when widget is active */
+.widget-active::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9990;
+  backdrop-filter: blur(3px);
+}
+
+/* Add these styles for the widget wrapper and close button */
+.widget-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.widget-container.active .widget-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.close-widget-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10000;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.close-widget-btn:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Improve widget positioning */
+.widget-active elevenlabs-convai {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 90% !important;
+  max-width: 900px !important;
+  height: 85vh !important;
+  max-height: 800px !important;
+  background-color: transparent !important;
+  border-radius: 12px !important;
+}
+
+/* Override any default positioning from the ElevenLabs widget */
+.widget-active elevenlabs-convai div[role="dialog"] {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: none !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
 }

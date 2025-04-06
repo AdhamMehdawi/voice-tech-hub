@@ -1,5 +1,4 @@
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface ElevenLabsConversationalAIProps {
   agentId: string;
@@ -13,139 +12,46 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
   onError
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const scriptRef = useRef<HTMLScriptElement | null>(null);
-  const mountedRef = useRef(true);
-  const widgetElementRef = useRef<HTMLElement | null>(null);
-  
+  const initialized = useRef(false);
+
   useEffect(() => {
-    console.log('ElevenLabs component mounting...');
-    mountedRef.current = true;
-    
-    // Function to safely set state only if component is still mounted
-    const safeSetState = (stateSetter: Function, value: any) => {
-      if (mountedRef.current) {
-        stateSetter(value);
-      }
-    };
-    
-    // Create the widget element with the exact structure from the embed code
-    const setupWidget = () => {
-      try {
-        if (!containerRef.current) return;
-        
-        // Clear previous content safely using innerHTML
-        containerRef.current.innerHTML = '';
-        
-        // Create the widget element
-        const widgetElement = document.createElement('elevenlabs-conval');
-        widgetElement.setAttribute('agent-id', agentId);
-        
-        // Store reference to the widget element for cleanup
-        widgetElementRef.current = widgetElement;
-        
-        // Append to container
-        containerRef.current.appendChild(widgetElement);
-        
-        console.log('ElevenLabs widget element added to DOM');
-      } catch (e) {
-        console.error('Error creating ElevenLabs widget:', e);
-        if (mountedRef.current) {
-          safeSetState(setError, 'Failed to create widget element');
-          if (onError) onError(e instanceof Error ? e : new Error('Unknown error'));
-        }
-      }
-    };
-    
-    // Load the script if it doesn't exist
-    const loadScript = () => {
-      const scriptId = 'elevenlabs-conval-script';
-      let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    // Only run this once to avoid re-creating the element
+    if (initialized.current) return;
+    initialized.current = true;
+
+    try {
+      if (!containerRef.current) return;
       
-      if (!script) {
-        script = document.createElement('script');
-        script.id = scriptId;
-        script.src = 'https://elevenlabs.io/conval-widget/index.js';
-        script.async = true;
-        script.type = 'text/javascript';
-        
-        // Store reference to the script element
-        scriptRef.current = script;
-        
-        // Add load event listener
-        script.onload = () => {
-          console.log('ElevenLabs script loaded successfully');
-          if (mountedRef.current) {
-            safeSetState(setLoading, false);
-            if (onLoad) onLoad();
-          }
-        };
-        
-        script.onerror = (e) => {
-          console.error('Error loading ElevenLabs script:', e);
-          if (mountedRef.current) {
-            safeSetState(setError, 'Failed to load ElevenLabs script');
-            safeSetState(setLoading, false);
-            if (onError) onError(new Error('Failed to load ElevenLabs script'));
-          }
-        };
-        
-        document.body.appendChild(script);
-      } else {
-        // Script already exists
-        safeSetState(setLoading, false);
-      }
-    };
-    
-    // Setup widget and load script
-    setupWidget();
-    loadScript();
-    
-    // Cleanup function
-    return () => {
-      console.log('ElevenLabs component unmounting...');
-      mountedRef.current = false;
+      // Create the widget element using the direct embed code
+      const widget = document.createElement('elevenlabs-conval');
+      widget.setAttribute('agent-id', agentId);
       
-      // Safely clear the container
-      if (containerRef.current) {
-        try {
-          // Use innerHTML as a safer way to clear the container
-          containerRef.current.innerHTML = '';
-        } catch (e) {
-          console.error('Error cleaning up container:', e);
-        }
-      }
+      // Clear container first
+      containerRef.current.innerHTML = '';
       
-      console.log('ElevenLabs component unmounted');
-    };
+      // Add widget to container
+      containerRef.current.appendChild(widget);
+      console.log('ElevenLabs widget element added to DOM');
+      
+      // Signal success
+      if (onLoad) {
+        // Give a short delay to allow the widget to initialize
+        setTimeout(onLoad, 500);
+      }
+    } catch (error) {
+      console.error('Error creating ElevenLabs widget:', error);
+      if (onError) onError(error instanceof Error ? error : new Error('Failed to create widget'));
+    }
+
+    // No cleanup function - we'll let React handle removing the container
   }, [agentId, onLoad, onError]);
-  
+
   return (
-    <div ref={containerRef} className="elevenlabs-widget-container h-full w-full bg-transparent z-50">
-      {loading && (
-        <div className="flex items-center justify-center h-full w-full">
-          <div className="text-center">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] mb-4"></div>
-            <p className="text-lg">Initializing voice interface...</p>
-          </div>
-        </div>
-      )}
-      {error && (
-        <div className="flex items-center justify-center h-full w-full">
-          <div className="text-center text-red-500 p-4 rounded-md">
-            <p className="font-bold mb-2">Error</p>
-            <p>{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+    <div 
+      ref={containerRef} 
+      className="elevenlabs-widget-container h-full w-full"
+      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+    />
   );
 };
 
