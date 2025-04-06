@@ -37,7 +37,7 @@ const ElevenLabsConversationalAI: React.FC<ElevenLabsConversationalAIProps> = ({
   }, [agentId]);
   
   return (
-    <div ref={containerRef} className="elevenlabs-widget-container h-full w-full"></div>
+    <div ref={containerRef} className="elevenlabs-widget-container h-full w-full flex items-center justify-center"></div>
   );
 };
 

@@ -69,7 +69,9 @@
   
   /* ElevenLabs Widget Customization */
   .elevenlabs-widget-container {
-    @apply bg-transparent;
+    @apply bg-transparent flex items-center justify-center;
+    min-height: 500px;
+    width: 100%;
   }
   
   /* Target the ElevenLabs widget elements for styling */
@@ -81,7 +83,8 @@
     --el-input-background-color: rgba(255, 255, 255, 0.1);
     --el-border-color: rgba(255, 255, 255, 0.1);
     
-    @apply h-full;
+    @apply h-full w-full flex-1;
+    max-width: 800px;
+    margin: 0 auto;
   }
 }
-
